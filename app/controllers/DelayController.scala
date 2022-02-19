@@ -11,21 +11,18 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DelayController @Inject()(val controllerComponents: ControllerComponents)(implicit futures: Futures, ec: ExecutionContext, system: ActorSystem) extends BaseController {
 
-  val delayedPattern = akka.pattern.after(3000.millis)(fromTheFuture("bar"))
-    //akka.pattern.after(5000.millis)(Future.failed(new IllegalStateException("no...")))
-
   def fromTheFuture(message: String): Future[String] = Future {
     message
   }
 
-  def delay(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    val future = Future {
-      println("fut is called")
-      Thread.sleep(1000)
-      println("fut is awake")
-      "foo"
+  def delay(sleep: Long, delay: Long): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    val delayedFuture = akka.pattern.after(delay.millis)(fromTheFuture("delayed response"))
+
+    val sleepyFuture = Future {
+      Thread.sleep(sleep)
+      "sleepy response"
     }
-    val result = Future.firstCompletedOf(Seq(future, delayedPattern))
+    val result = Future.firstCompletedOf(Seq(sleepyFuture, delayedFuture))
 
     result.map(res => Ok(res)).recover {
       case e => InternalServerError(s"something went wrong. $e")

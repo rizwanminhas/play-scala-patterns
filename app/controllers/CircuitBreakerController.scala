@@ -26,8 +26,10 @@ class CircuitBreakerController @Inject()(val controllerComponents: ControllerCom
   }
 
   def circuitBreaker(): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    breaker.withCircuitBreaker(service()).map(i => Ok(s"got $i")).recover {
-      case e => InternalServerError(s"something went wrong. $e")
-    }
+    breaker.withCircuitBreaker(service())
+      .map(i => Ok(s"service call returned: $i"))
+      .recover {
+        case e => InternalServerError(s"something went wrong. $e")
+      }
   }
 }
