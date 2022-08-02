@@ -15,11 +15,11 @@ class DelayController @Inject()(val controllerComponents: ControllerComponents)(
     message
   }
 
-  def delay(sleep: Long, delay: Long): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-    val delayedFuture = akka.pattern.after(delay.millis)(fromTheFuture("delayed response"))
+  def delay(sleepInMillis: Long, delayInMillis: Long): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+    val delayedFuture = akka.pattern.after(delayInMillis.millis)(fromTheFuture("delayed response"))
 
     val sleepyFuture = Future {
-      Thread.sleep(sleep)
+      Thread.sleep(sleepInMillis)
       "sleepy response"
     }
     val result = Future.firstCompletedOf(Seq(sleepyFuture, delayedFuture))

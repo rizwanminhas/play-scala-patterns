@@ -1,13 +1,15 @@
-GET     /timeout/:duration                      controllers.TimeoutController.timeout(duration: Long)
+GET     /timeout/:durationInMillis              controllers.TimeoutController.timeout(durationInMillis: Long)
 
 GET     /circuit-breaker                        controllers.CircuitBreakerController.circuitBreaker()
 
 GET     /retry                                  controllers.RetryController.retry()
 
-GET     /delay                                  controllers.DelayController.delay(sleep: Long, delay: Long)
+GET     /delay                                  controllers.DelayController.delay(sleepInMillis: Long, delayInMillis: Long)
 
 GET     /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /actionWithTimeout                      controllers.TimeoutController.actionWithTimeout
 
 GET     /actionWithCircuitBreaker               controllers.CircuitBreakerController.actionWithCircuitBreaker
+
+GET     /demo                                   controllers.CustomController.demo

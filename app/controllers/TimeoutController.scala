@@ -10,17 +10,17 @@ import scala.concurrent.duration._
 @Singleton
 class TimeoutController @Inject()(val controllerComponents: ControllerComponents)(implicit futures: Futures, ec: ExecutionContext) extends BaseController {
 
-  def withTimeout(delay: Long)(f: Request[AnyContent] => Future[Result]): Action[AnyContent] =
+  def withTimeout(durationInMillis: Long)(callback: Request[AnyContent] => Future[Result]): Action[AnyContent] =
     Action.async { implicit request =>
-      f(request).withTimeout(delay.milliseconds).recover {
+      callback(request).withTimeout(durationInMillis.milliseconds).recover {
         case e: TimeoutException => RequestTimeout(s"request timed out: $e")
       }
     }
 
 
-  def timeout(duration: Long = 1000): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+  def timeout(durationInMillis: Long = 1000): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val start = System.currentTimeMillis()
-    val absDuration = Math.abs(duration)
+    val absDuration = Math.abs(durationInMillis)
     Future {
       Thread.sleep(absDuration + 100)
       "hello world"
@@ -33,9 +33,9 @@ class TimeoutController @Inject()(val controllerComponents: ControllerComponents
     }
   }
 
-  def actionWithTimeout: Action[AnyContent] = withTimeout(1100) { implicit request =>
+  def actionWithTimeout: Action[AnyContent] = withTimeout(1000) { implicit request =>
     Future {
-      Thread.sleep(1200)
+      Thread.sleep(1100)
       Ok("This should timeout if Thread.sleep > delay value in withTimeout")
     }
   }
