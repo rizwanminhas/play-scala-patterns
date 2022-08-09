@@ -1,15 +1,17 @@
-GET     /timeout/:durationInMillis              controllers.TimeoutController.timeout(durationInMillis: Long)
+GET     /assets/*file                              controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /circuit-breaker                        controllers.CircuitBreakerController.circuitBreaker()
+GET     /timeout/:durationInMillis                 controllers.TimeoutController.timeout(durationInMillis: Long)
 
-GET     /retry                                  controllers.RetryController.retry()
+GET     /circuit-breaker                           controllers.CircuitBreakerController.circuitBreaker()
 
-GET     /delay                                  controllers.DelayController.delay(sleepInMillis: Long, delayInMillis: Long)
+GET     /retry                                     controllers.RetryController.retry()
 
-GET     /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
+GET     /delay                                     controllers.DelayController.delay(sleepInMillis: Long, delayInMillis: Long)
 
-GET     /actionWithTimeout                      controllers.TimeoutController.actionWithTimeout
+GET     /dependency-injection/test/:implementation controllers.DIController.test(implementation: String)
 
-GET     /actionWithCircuitBreaker               controllers.CircuitBreakerController.actionWithCircuitBreaker
+GET     /actionWithTimeout                         controllers.TimeoutController.actionWithTimeout
 
-GET     /demo                                   controllers.CustomController.demo
+GET     /actionWithCircuitBreaker                  controllers.CircuitBreakerController.actionWithCircuitBreaker
+
+#GET     /demo                                      controllers.CustomController.demo
